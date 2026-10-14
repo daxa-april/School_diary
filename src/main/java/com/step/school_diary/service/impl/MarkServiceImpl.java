@@ -14,6 +14,8 @@ import com.step.school_diary.service.MarkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Daria Pevets
  **/
@@ -39,6 +41,7 @@ public class MarkServiceImpl implements MarkService {
             mark.setValue(value);
             mark.setStudent(student);
             mark.setSubject(subject);
+            mark.setDate(LocalDateTime.now());
             markRepository.save(mark);
         }
         return markMapper.mapMarkToMarkResponseDto(mark);

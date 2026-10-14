@@ -1,13 +1,13 @@
 package com.step.school_diary.model.dto.requestDto;
 
-import com.step.school_diary.model.annotation.SubjectValid;
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * @author Daria Pevets
  **/
 public record SubjectDto(
 
-        @SubjectValid
+        @NotBlank
         String title
 ) {
 }

@@ -1,8 +1,7 @@
-package com.step.school_diary.model;
+package com.step.school_diary.model.entity.errorResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
@@ -21,4 +20,9 @@ public class ErrorResponse {
     private String error;
     private String message;
     private String path;
+
+    public ErrorResponse(HttpStatus status, String message) {
+        this.status = status;
+        this.message = message;
+    }
 }

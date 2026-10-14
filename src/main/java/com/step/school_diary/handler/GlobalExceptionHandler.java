@@ -2,11 +2,12 @@ package com.step.school_diary.handler;
 
 import com.step.school_diary.exception.InvalidMarkException;
 import com.step.school_diary.exception.ResourceNotFoundException;
-import com.step.school_diary.model.ErrorResponse;
-import jakarta.validation.ConstraintViolationException;
-import org.springframework.dao.DataIntegrityViolationException;
+import com.step.school_diary.exception.SubjectAlreadyExistsException;
+import com.step.school_diary.model.entity.errorResponse.ErrorResponse;
+import com.step.school_diary.model.entity.errorResponse.ValidationErr;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -49,9 +50,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException
-            (DataIntegrityViolationException exception, WebRequest request) {
+    @ExceptionHandler(SubjectAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleSubjectAlreadyExistsException
+            (SubjectAlreadyExistsException exception, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST,
@@ -63,27 +64,20 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleUnpredictedExceptions(Exception ex, WebRequest request) {
+    public ResponseEntity<ErrorResponse> handleUnpredictedExceptions(Exception ex) {
         ErrorResponse errorResponse = new ErrorResponse(
-                LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                "На сервере произошла непредвиденная ошибка, попробуйте позже.",
-                ex.getMessage(),
-                getRequestPath(request)
+                "На сервере произошла непредвиденная ошибка, попробуйте позже."
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleConstraintViolationException(
-            ConstraintViolationException ex, WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse(
-                LocalDateTime.now(),
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ValidationErr> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        ValidationErr validationErr = new ValidationErr(
                 HttpStatus.BAD_REQUEST,
-                "Argument isn't valid.",
-                ex.getMessage(),
-                getRequestPath(request)
+                ex.getFieldErrors()
         );
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(validationErr, HttpStatus.BAD_REQUEST);
     }
 }
