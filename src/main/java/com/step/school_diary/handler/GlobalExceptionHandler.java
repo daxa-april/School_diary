@@ -2,8 +2,9 @@ package com.step.school_diary.handler;
 
 import com.step.school_diary.exception.InvalidMarkException;
 import com.step.school_diary.exception.ResourceNotFoundException;
-import com.step.school_diary.exception.SubjectAlreadyExistsException;
 import com.step.school_diary.model.ErrorResponse;
+import jakarta.validation.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,7 +29,7 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST,
-                "Invalid Mark Exception",
+                "Invalid Mark",
                 exception.getMessage(),
                 getRequestPath(request)
         );
@@ -45,17 +46,16 @@ public class GlobalExceptionHandler {
                 exception.getMessage(),
                 getRequestPath(request)
         );
-        //todo: разобраться с сообщениями и сделать шоб красиво приходило во всем классе.
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(SubjectAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponse> handleSubjectAlreadyExistsException
-            (InvalidMarkException exception, WebRequest request) {
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException
+            (DataIntegrityViolationException exception, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST,
-                "Subject already exists exception",
+                "Subject already exists",
                 exception.getMessage(),
                 getRequestPath(request)
         );
@@ -72,5 +72,18 @@ public class GlobalExceptionHandler {
                 getRequestPath(request)
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(
+            ConstraintViolationException ex, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST,
+                "Argument isn't valid.",
+                ex.getMessage(),
+                getRequestPath(request)
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }

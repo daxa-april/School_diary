@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author Daria Pevets
  **/
 public interface SubjectRepository extends JpaRepository<Subject, Integer> {
+
+    boolean existsSubjectByTitle(String title);
 }

@@ -1,11 +1,11 @@
 package com.step.school_diary.controller;
 
-import com.step.school_diary.exception.ResourceNotFoundException;
-import com.step.school_diary.model.entity.Student;
-import com.step.school_diary.repository.StudentRepository;
+import com.step.school_diary.model.dto.requestDto.StudentDto;
+import com.step.school_diary.model.dto.responseDto.StudentResponseDto;
+import com.step.school_diary.service.StudentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Daria Pevets
@@ -14,14 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController("/api/students/")
 public class StudentController {
 
-    private final StudentRepository studentRepository;
+    private final StudentService studentService;
 
-    @GetMapping
-    public Student getStudent(Long id) {
-        Student student = studentRepository.findById(id.intValue())
-                .orElseThrow(() -> new ResourceNotFoundException("Ученик с ID " + id + " не найден"));
-        studentRepository.save(student);
-        return student;
-        //todo: пересмотреть данную шляпу после кофе.
+    @GetMapping("{id}")
+    public StudentResponseDto getStudent(@PathVariable Long id) {
+        return studentService.getStudent(id);
+    }
+
+    @PostMapping("/save")
+    public StudentResponseDto saveStudent(@Valid @RequestBody StudentDto studentDto) {
+        return studentService.saveStudent(studentDto);
     }
 }

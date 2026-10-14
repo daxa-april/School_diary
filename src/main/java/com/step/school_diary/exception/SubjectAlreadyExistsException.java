@@ -1,7 +1,5 @@
 package com.step.school_diary.exception;
 
-import lombok.AllArgsConstructor;
-
 /**
  * @author Daria Pevets
  * <p>

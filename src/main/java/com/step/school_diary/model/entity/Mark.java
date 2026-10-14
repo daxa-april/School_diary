@@ -1,10 +1,6 @@
 package com.step.school_diary.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,10 +14,8 @@ import java.time.LocalDateTime;
 @Entity
 public class Mark {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Min(value = 1, message = "Mark can't be less than 1")
-    @Max(value = 5, message = "Mark can't be more than 5")
     private Integer value;
 
     @ManyToOne
@@ -29,6 +23,5 @@ public class Mark {
 
     @ManyToOne
     private Subject subject;
-
     private LocalDateTime date;
 }

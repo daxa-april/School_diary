@@ -1,7 +1,8 @@
 package com.step.school_diary.controller;
 
-import com.step.school_diary.model.entity.Subject;
-import com.step.school_diary.repository.SubjectRepository;
+import com.step.school_diary.model.dto.requestDto.SubjectDto;
+import com.step.school_diary.model.dto.responseDto.SubjectResponseDto;
+import com.step.school_diary.service.SubjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController("/api/subjects/")
 public class SubjectController {
 
-    private final SubjectRepository subjectRepository;
+    private final SubjectService subjectService;
 
-    @PostMapping
-    public Subject addSubject(@RequestBody Subject subject) {
-        return subjectRepository.save(subject);
+    @PostMapping("/newSubject")
+    public SubjectResponseDto addSubject(@RequestBody SubjectDto subjectDto) {
+        return subjectService.addSubject(subjectDto);
     }
 }
